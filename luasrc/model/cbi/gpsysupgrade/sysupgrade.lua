@@ -31,7 +31,7 @@ function to_check()
 	system_version = get_system_version()
 	sysverformat = luci.sys.exec("date -d $(echo " ..system_version.. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
 	currentTimeStamp = luci.sys.exec("expr $(date -d \"$(date '+%Y-%m-%d %H:%M:%S')\" +%s) - 172800")
-	if model == "OpenWrt" then
+	if model == "x86_64" then
 		check_update()
 		if fs.access("/sys/firmware/efi") then
 			download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
