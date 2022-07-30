@@ -13,8 +13,8 @@ end
 
 function check_update()
 		needs_update, notice = false, false
-		remote_version = luci.sys.exec("echo -n $(curl -s https://github.com/ywt114/Actions-OpenWrt/releases/latest" ..model.. "/version.txt)")
-		updatelogs = luci.sys.exec("curl -s https://github.com/ywt114/Actions-OpenWrt/releases/latest" ..model.. "/updatelogs.txt")
+		remote_version = luci.sys.exec("echo -n $(curl -s https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/version.txt)")
+		updatelogs = luci.sys.exec("curl -s https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/updatelogs.txt")
 		remoteformat = luci.sys.exec("date -d $(echo " ..remote_version.. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
 		fnotice = luci.sys.exec("echo -n " ..remote_version.. " | sed -n '/\\.$/p'")
 		dateyr = luci.sys.exec("echo -n " ..remote_version.. " | awk -F. '{printf $1\".\"$2}'")
