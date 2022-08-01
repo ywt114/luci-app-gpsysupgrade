@@ -8,10 +8,10 @@ local sysupgrade = require "luci.model.cbi.gpsysupgrade.sysupgrade"
 
 function index()
 	appname = "gpsysupgrade"
-	entry({"cgi-bin","admin", "services", appname}).dependent = true
-	entry({"cgi-bin","admin", "services", appname}, template("gpsysupgrade/system_version"), _("System upgrade"), 1)
-	entry({"cgi-bin","admin", "services", appname, "sysversion_check"}, call("sysversion_check")).leaf = true
-	entry({"cgi-bin","admin", "services", appname, "sysversion_update"}, call("sysversion_update")).leaf = true
+	entry({"admin", "services", appname}).dependent = true
+	entry({"admin", "services", appname}, template("gpsysupgrade/system_version"), _("System upgrade"), 1)
+	entry({"admin", "services", appname, "sysversion_check"}, call("sysversion_check")).leaf = true
+	entry({"admin", "services", appname, "sysversion_update"}, call("sysversion_update")).leaf = true
 end
 
 local function http_write_json(content)
