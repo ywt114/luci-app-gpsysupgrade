@@ -29,7 +29,7 @@ end
 function to_check()
     if not model or model == "" then model = api.auto_get_model() end
 	system_version = get_system_version()
-	sysverformat = luci.sys.exec("date -d $(echo " ..system_version.. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
+	sysverformat = luci.sys.exec("date -d $(echo " ..system_version.. " | awk 'NR==1'")
 	currentTimeStamp = luci.sys.exec("expr $(date -d \"$(date '+%Y-%m-%d %H:%M:%S')\" +%s) - 172800")
 	if model == "x86_64" then
 		check_update()
