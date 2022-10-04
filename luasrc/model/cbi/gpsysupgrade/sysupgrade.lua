@@ -13,11 +13,10 @@ end
 
 function check_update()
 		needs_update, notice = false, false
-		remote_version = luci.sys.exec("echo -n $(curl -s https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/version.txt)")
-		updatelogs = luci.sys.exec("curl -s https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/updatelogs.txt")
-		remoteformat = luci.sys.exec("date -d $(echo " ..remote_version.. " | awk 'NR==1'")
+		remote_version = luci.sys.exec("echo -n $(curl -s https://github.com/ywt114/OpenWrt/releases/download/" ..model.. "/version.txt)")
+		remoteformat = luci.sys.exec("date -d $(echo " ..remote_version.. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
 		fnotice = luci.sys.exec("echo -n " ..remote_version.. " | sed -n '/\\.$/p'")
-		dateyr = luci.sys.exec("echo -n " ..remote_version.. " | awk 'NR==1'")
+		dateyr = luci.sys.exec("echo -n " ..remote_version.. " | awk -F. '{printf $1\".\"$2}'")
 		if remoteformat > sysverformat then
 			needs_update = true
 			if currentTimeStamp > remoteformat or fnotice ~= "" then
@@ -29,45 +28,16 @@ end
 function to_check()
     if not model or model == "" then model = api.auto_get_model() end
 	system_version = get_system_version()
-	sysverformat = luci.sys.exec("date -d $(echo " ..system_version.. " | awk 'NR==1'")
+	sysverformat = luci.sys.exec("date -d $(echo " ..system_version.. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
 	currentTimeStamp = luci.sys.exec("expr $(date -d \"$(date '+%Y-%m-%d %H:%M:%S')\" +%s) - 172800")
 	if model == "x86_64" then
 		check_update()
 		if fs.access("/sys/firmware/efi") then
-			download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
+			download_url = "https://github.com/ywt114/OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-5.10--openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
 		else
-			download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-openwrt-x86-64-generic-squashfs-combined.img.gz"
+			download_url = "https://github.com/ywt114/OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-5.10--openwrt-x86-64-generic-squashfs-combined.img.gz"
 		end
-    elseif model:match(".*K2P.*") then
-		model = "phicomm-k2p"
-		check_update()
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-openwrt-ramips-mt7621-phicomm_k2p-squashfs-sysupgrade.bin"
-    elseif model:match(".*AC2100.*") then
-		model = "redmi-ac2100"
-		check_update()
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-openwrt-ramips-mt7621-redmi-ac2100-squashfs-sysupgrade.bin"
-    elseif model:match(".*R2S.*") then
-		model = "nanopi-r2s"
-		check_update()
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-openwrt-rockchip-armv8-nanopi-r2s-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*R4S.*") then
-		model = "nanopi-r4s"
-		check_update()
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-openwrt-rockchip-armv8-nanopi-r4s-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*D2.*") then
-		model = "newifi-d2"
-		check_update()
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-openwrt-ramips-mt7621-newifi-d2-squashfs-sysupgrade.bin"
-    elseif model:match(".*XY-C5.*") then
-		model = "XY-C5"
-		check_update()
-		if remoteformat > sysverformat and currentTimeStamp > remoteformat then needs_update = true else needs_update = false end
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-openwrt-ramips-mt7621-xy-c5-squashfs-sysupgrade.bin"
-    elseif model:match(".*Mi Router 3 Pro.*") then
-		model = "xiaomi-r3p"
-		check_update()
-		if remoteformat > sysverformat and currentTimeStamp > remoteformat then needs_update = true else needs_update = false end
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-openwrt-ramips-mt7621-xiaomi_mir3p-squashfs-sysupgrade.bin"
+
 	else
 		local needs_update = false
 		return {
