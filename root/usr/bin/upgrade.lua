@@ -56,60 +56,20 @@ end
     local download_url,remote_version,needs_update,remoteformat,sysverformat,currentTimeStamp,dateyr
 	local version_file = "/tmp/version.txt"
 	system_version = get_system_version()
-	sysverformat = luci.sys.exec("date -d $(echo " ..system_version.. " | awk 'NR==1'")
+	sysverformat = luci.sys.exec("date -d $(echo " ..system_version.. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
 	currentTimeStamp = luci.sys.exec("expr $(date -d \"$(date '+%Y-%m-%d %H:%M:%S')\" +%s) - 259200")
 	if model == "x86_64" then
-		api.exec(api.wget, {api._unpack(api.wget_args), "-O", version_file, "https://github.com/ywt114/Actions-OpenWrt/releases/download/x86_64/version.txt"}, nil, api.command_timeout)
+		api.exec(api.wget, {api._unpack(api.wget_args), "-O", version_file, "https://github.com/ywt114/OpenWrt/releases/download/x86_64/version.txt"}, nil, api.command_timeout)
 		remote_version = luci.sys.exec("[ -f '" ..version_file.. "' ] && echo -n `cat " ..version_file.. "`")
-		dateyr = luci.sys.exec("echo " ..remote_version.. " | awk 'NR==1'")
-		remoteformat = luci.sys.exec("date -d $(echo " ..remote_version.. " | awk 'NR==1'")
+		dateyr = luci.sys.exec("echo " ..remote_version.. " | awk -F. '{printf $1\".\"$2}'")
+		remoteformat = luci.sys.exec("date -d $(echo " ..remote_version.. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
 		if remoteformat > sysverformat and currentTimeStamp > remoteformat then needs_update = true else needs_update = false end
 		if fs.access("/sys/firmware/efi") then
-			download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/x86_64/" ..dateyr.. "-openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
+			download_url = "https://github.com/ywt114/OpenWrt/releases/download/x86_64/" ..dateyr.. "-5.10--openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
 		else
-			download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/x86_64/" ..dateyr.. "-openwrt-x86-64-generic-squashfs-combined.img.gz"
+			download_url = "https://github.com/ywt114/OpenWrt/releases/download/x86_64/" ..dateyr.. "-5.10--openwrt-x86-64-generic-squashfs-combined.img.gz"
 		end
-    elseif model:match(".*K2P.*") then
-		api.exec(api.wget, {api._unpack(api.wget_args), "-O", version_file, "https://github.com/ywt114/Actions-OpenWrt/releases/download/phicomm-k2p/version.txt"}, nil, api.command_timeout)
-		remote_version = luci.sys.exec("[ -f '" ..version_file.. "' ] && echo -n `cat " ..version_file.. "`")
-		dateyr = luci.sys.exec("echo " ..remote_version.. " | awk 'NR==1'")
-		remoteformat = luci.sys.exec("date -d $(echo " ..remote_version.. " | awk 'NR==1'")
-		if remoteformat > sysverformat and currentTimeStamp > remoteformat then needs_update = true else needs_update = false end
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/phicomm-k2p/" ..dateyr.. "-openwrt-ramips-mt7621-phicomm_k2p-squashfs-sysupgrade.bin"
-    elseif model:match(".*AC2100.*") then
-		api.exec(api.wget, {api._unpack(api.wget_args), "-O", version_file, "https://github.com/ywt114/Actions-OpenWrt/releases/download/redmi-ac2100/version.txt"}, nil, api.command_timeout)
-		remote_version = luci.sys.exec("[ -f '" ..version_file.. "' ] && echo -n `cat " ..version_file.. "`")
-		dateyr = luci.sys.exec("echo " ..remote_version.. " | awk 'NR==1'")
-		remoteformat = luci.sys.exec("date -d $(echo " ..remote_version.. " | awk 'NR==1'")
-		if remoteformat > sysverformat and currentTimeStamp > remoteformat then needs_update = true else needs_update = false end
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/redmi-ac2100/" ..dateyr.. "-openwrt-ramips-mt7621-redmi-ac2100-squashfs-sysupgrade.bin"
-    elseif model:match(".*R2S.*") then
-		api.exec(api.wget, {api._unpack(api.wget_args), "-O", version_file, "https://github.com/ywt114/Actions-OpenWrt/releases/download/nanopi-r2s/version.txt"}, nil, api.command_timeout)
-		remote_version = luci.sys.exec("[ -f '" ..version_file.. "' ] && echo -n `cat " ..version_file.. "`")
-		dateyr = luci.sys.exec("echo " ..remote_version.. " | awk 'NR==1'")
-		remoteformat = luci.sys.exec("date -d $(echo " ..remote_version.. " | awk 'NR==1'")
-		if remoteformat > sysverformat and currentTimeStamp > remoteformat then needs_update = true else needs_update = false end
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/nanopi-r2s/" ..dateyr.. "-openwrt-rockchip-armv8-nanopi-r2s-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*HC5962.*") then
-		api.exec(api.wget, {api._unpack(api.wget_args), "-O", version_file, "https://github.com/ywt114/Actions-OpenWrt/releases/download/hiwifi-hc5962/version.txt"}, nil, api.command_timeout)
-		remote_version = luci.sys.exec("[ -f '" ..version_file.. "' ] && echo -n `cat " ..version_file.. "`")
-		dateyr = luci.sys.exec("echo " ..remote_version.. " | awk 'NR==1'")
-		remoteformat = luci.sys.exec("date -d $(echo " ..remote_version.. " | awk 'NR==1'")
-		if remoteformat > sysverformat and currentTimeStamp > remoteformat then needs_update = true else needs_update = false end
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/hiwifi-hc5962/" ..dateyr.. "-openwrt-ramips-mt7621-hiwifi_hc5962-squashfs-sysupgrade.bin"
-    elseif model:match(".*D2") then
-		api.exec(api.wget, {api._unpack(api.wget_args), "-O", version_file, "https://github.com/ywt114/Actions-OpenWrt/releases/download/newifi-d2/version.txt"}, nil, api.command_timeout)
-		remote_version = luci.sys.exec("[ -f '" ..version_file.. "' ] && echo -n `cat " ..version_file.. "`")
-		dateyr = luci.sys.exec("echo " ..remote_version.. " | awk 'NR==1'")
-		if remoteformat > sysverformat and currentTimeStamp > remoteformat then needs_update = true else needs_update = false end
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/newifi-d2/" ..dateyr.. "-openwrt-ramips-mt7621-newifi-d2-squashfs-sysupgrade.bin"
-    elseif model:match(".*XIAOYU") then
-		api.exec(api.wget, {api._unpack(api.wget_args), "-O", version_file, "https://github.com/ywt114/Actions-OpenWrt/releases/download/XY-C5/version.txt"}, nil, api.command_timeout)
-		remote_version = luci.sys.exec("[ -f '" ..version_file.. "' ] && echo -n `cat " ..version_file.. "`")
-		dateyr = luci.sys.exec("echo " ..remote_version.. " | awk 'NR==1'")
-		remoteformat = luci.sys.exec("date -d $(echo " ..remote_version.. " | awk 'NR==1'")
-		if remoteformat > sysverformat and currentTimeStamp > remoteformat then needs_update = true else needs_update = false end
-        download_url = "https://github.com/ywt114/Actions-OpenWrt/releases/download/XY-C5/" ..dateyr.. "-openwrt-ramips-mt7621-xiaoyu_xy-c5-squashfs-sysupgrade.bin"
+
 	else
 		local needs_update = false
 		return {
