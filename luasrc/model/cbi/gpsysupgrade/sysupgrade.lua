@@ -33,9 +33,9 @@ function to_check()
 	if model == "x86_64" then
 		check_update()
 		if fs.access("/sys/firmware/efi") then
-			download_url = "https://github.com/ywt114/OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-5.10--openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
+			download_url = "https://github.com/ywt114/OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-5.10-openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
 		else
-			download_url = "https://github.com/ywt114/OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-5.10--openwrt-x86-64-generic-squashfs-combined.img.gz"
+			download_url = "https://github.com/ywt114/OpenWrt/releases/download/" ..model.. "/" ..dateyr.. "-5.10-openwrt-x86-64-generic-squashfs-combined.img.gz"
 		end
 
 	else
