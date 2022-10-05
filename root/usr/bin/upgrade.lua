@@ -65,9 +65,9 @@ end
 		remoteformat = luci.sys.exec("date -d $(echo " ..remote_version.. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
 		if remoteformat > sysverformat and currentTimeStamp > remoteformat then needs_update = true else needs_update = false end
 		if fs.access("/sys/firmware/efi") then
-			download_url = "https://github.com/ywt114/OpenWrt/releases/download/x86_64/" ..dateyr.. "-5.10--openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
+			download_url = "https://github.com/ywt114/OpenWrt/releases/download/x86_64/" ..dateyr.. "-5.10-openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
 		else
-			download_url = "https://github.com/ywt114/OpenWrt/releases/download/x86_64/" ..dateyr.. "-5.10--openwrt-x86-64-generic-squashfs-combined.img.gz"
+			download_url = "https://github.com/ywt114/OpenWrt/releases/download/x86_64/" ..dateyr.. "-5.10-openwrt-x86-64-generic-squashfs-combined.img.gz"
 		end
 
 	else
